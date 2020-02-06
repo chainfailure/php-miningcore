@@ -22,7 +22,7 @@ class PoolFactory
         $decoded = json_decode((string) $response->getBody());
 
         return array_map(function ($entry) {
-            return $this->mapPoolEntry($entry);
+            return $this->mapEntry($entry);
         }, $decoded->pools);
     }
 
@@ -32,7 +32,7 @@ class PoolFactory
      * @param $entry
      * @return Pool
      */
-    protected function mapPoolEntry($entry): Pool
+    protected function mapEntry($entry): Pool
     {
         $coin = new PoolCoin(
             $entry->coin->type,
