@@ -1,16 +1,22 @@
 <?php
 
-namespace App\MiningPool\API;
+namespace App\Miningcore\Factories;
 
-use App\MiningPool\Pool;
-use App\MiningPool\PoolCoin;
-use App\MiningPool\PoolNetworkStats;
-use App\MiningPool\PoolPaymentProcessing;
-use App\MiningPool\PoolStats;
+use App\Miningcore\Pool;
+use App\Miningcore\PoolCoin;
+use App\Miningcore\PoolNetworkStats;
+use App\Miningcore\PoolPaymentProcessing;
+use App\Miningcore\PoolStats;
 use GuzzleHttp\Psr7\Response;
 
 class PoolFactory
 {
+    /**
+     * Maps a JSON response to pool objects.
+     *
+     * @param Response $response
+     * @return Pool[]
+     */
     public function fromResponse(Response $response): array
     {
         $decoded = json_decode((string) $response->getBody());
@@ -20,6 +26,12 @@ class PoolFactory
         }, $decoded->pools);
     }
 
+    /**
+     * Maps a single entry in the pool listing response to a pool object.
+     *
+     * @param $entry
+     * @return Pool
+     */
     protected function mapPoolEntry($entry): Pool
     {
         $coin = new PoolCoin(
@@ -54,10 +66,21 @@ class PoolFactory
             $entry->networkStats->rewardType,
         );
 
-        dd($stats);
-
-//        return new Pool(
-//            $entry->id,
-//        );
+        return new Pool(
+            $entry->id,
+            $coin,
+            [],
+            $paymentProcessing,
+            $entry->shareBasedBanning,
+            $entry->clientConnectionTimeout,
+            $entry->jobRebroadcastTimeout,
+            $entry->blockRefreshInterval,
+            $entry->poolFeePercent,
+            $entry->address,
+            $entry->addressInfoLink,
+            $stats,
+            $networkStats,
+            $entry->totalPaid
+        );
     }
 }

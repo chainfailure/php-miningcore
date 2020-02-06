@@ -1,14 +1,15 @@
 <?php
 
-namespace App\MiningPool\API;
+namespace App\Miningcore;
 
 use GuzzleHttp\Client;
+use App\Miningcore\Factories\PoolFactory;
 
 /**
  * Represents an active instance of Miningcore
- * @package App\MiningPool\Miningcore
+ * @package App\Miningcore\Miningcore
  */
-class MiningCore
+class API
 {
     /** @var Client */
     protected $httpClient;
@@ -27,6 +28,8 @@ class MiningCore
     }
 
     /**
+     * Returns a list of all pools currently running on the miningcore instance.
+     *
      * @return Pool[]
      */
     public function getPools(): array
@@ -34,14 +37,21 @@ class MiningCore
         $resp = $this->httpClient->get('/api/pools');
 
         if ($resp->getStatusCode() !== 200) {
-            // Handle API downtime
+            // TODO: Handle API downtime
         }
 
         return $this->poolFactory->fromResponse($resp);
     }
 
+    /**
+     * Fires a request to determine if the mining pool is currently active and not returning any errors.
+     *
+     * @return bool
+     */
     public function isAlive(): bool
     {
-        $resp = $this->httpClient->
+        $resp = $this->httpClient->get('/api/pools');
+
+        return $resp->getStatusCode() === 200;
     }
 }

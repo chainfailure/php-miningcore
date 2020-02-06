@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\MiningPool;
+namespace App\Miningcore;
 
 
 class PoolPaymentProcessing
